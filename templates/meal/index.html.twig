@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+
+
+{% block body %}
+
+    {% for meal in meals %}
+
+        <h3><a href={{ url( "meal_details", {"id": meal.id} ) }}>{{ meal.name }}</a></h3>
+        <p>{{ meal.createdAt | addedDate  }}</p>
+        <a class="btn btn-outline-dark float-left" href="{{ url('meal_edit', {"id": meal.id}) }}">Edit Name</a>
+        <a class="btn btn-outline-danger float-left" href="{{ url('meal_delete', {"id": meal.id}) }}">Delete Meal</a>
+        <br><br>
+        <hr>
+        <br>
+
+
+    {% else %}
+        <div class="container">
+            <h3>Your Meal list is empty</h3>
+        </div>
+    {% endfor %}
+
+
+{% endblock %}

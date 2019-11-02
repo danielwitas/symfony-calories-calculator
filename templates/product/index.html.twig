@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+
+
+{% block body %}
+
+    {% for product in products %}
+        <div class="container">
+
+
+            <h3><a href={{ url( "product_details", {"id": product.id} ) }}>{{ product.name }}</a></h3>
+
+            <p>Value: {{ product.value }}</p>
+            <p>Calories: {{ product.calories }}</p>
+            <p>Protein: {{ product.protein }}</p>
+            <p>Carbs: {{ product.carbs }}</p>
+            <p>Fat: {{ product.fat }}</p>
+        </div>
+        <hr>
+    {% else %}
+        <div class="container">
+            <h3>Your Product list is empty</h3>
+        </div>
+    {% endfor %}
+{% endblock %}

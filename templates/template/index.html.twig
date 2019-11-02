@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+
+
+{% block body %}
+
+    {% for template in templates %}
+
+        <h3><a href={{ url( "template_details", {"id": template.id} ) }}>{{ template.name }}</a></h3>
+        <p>{{ template.createdAt | addedDate  }}</p>
+        {% if template.totalCalories is not empty  %}
+        <p>Summary: Calories: {{ template.totalCalories }}</p>
+        {% endif %}
+        <a class="btn btn-outline-dark float-left" href="{{ url('template_edit', {"id": template.id}) }}">Edit Name</a>
+        <a class="btn btn-outline-danger float-left" href="{{ url('template_delete', {"id": template.id}) }}">Delete Template</a>
+        <br><br>
+        <hr>
+        <br>
+    {% else %}
+        <div class="container">
+            <h3>Your Template list is empty</h3>
+        </div>
+    {% endfor %}
+
+
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+
+
+{% block body %}
+
+    <div class="form-group">
+        <ul class="container">
+            <li class="list-group-item list-group-item-primary">
+                <h3>{{ product.name }}</h3>
+            </li>
+            <li class="list-group-item">Value: {{ product.value }}</li>
+            <li class="list-group-item">Calories: {{ product.calories }}</li>
+            <li class="list-group-item">Protein: {{ product.protein }}</li>
+            <li class="list-group-item">Carbs: {{ product.carbs }}</li>
+            <li class="list-group-item">Fat: {{ product.fat }}</li>
+            <li class="list-group-item">Fat: {{ product.totalCalories }}</li>
+        </ul>
+    </div>
+
+    <a class="btn btn-outline-primary float-left" href="{{ url('product_index') }}">Back</a>
+    <a class="btn btn-outline-dark float-left" href="{{ url('product_edit', {"id": product.id}) }}">Edit</a>
+
+    {{ form_start(deleteForm, {"attr": {"class": "float-left"}}) }}
+        {{ form_widget(deleteForm.submit, {"attr": {"class": "btn-outline-danger"}}) }}
+        {{ form_rest(deleteForm) }}
+    {{ form_end(deleteForm) }}
+
+    <div class="clearfix"></div>
+
+
+{% endblock %}

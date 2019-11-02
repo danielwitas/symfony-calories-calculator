@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <h3>Meal name: {{ meal.name }}</h3>
+    <hr>
+    <br>
+    {% set totalCalories = null %}
+    {% set totalProtien = null %}
+    {% set totalCarbs = null %}
+    {% set totalFat = null %}
+
+
+    {% for product in meal.products %}
+        <h3>{{ product.name }}, Value: {{ product.value }}, Calories: {{ product.calories }}, Protein: {{ product.protein }}, Carbs: {{ product.carbs }}, Fat: {{ product.fat }}</h3>
+        <a class="btn btn-outline-danger" href={{ url( "product_delete", {"id": product.id} ) }}>Delete Product</a>
+        <a class="btn btn-outline-dark" href={{ url( "product_edit", {"id": product.id} ) }}>Edit Product</a>
+        <hr>
+        {% set totalCalories = totalCalories + product.calories %}
+        {% set totalProtien = totalProtien + product.protein %}
+        {% set totalCarbs = totalCarbs + product.carbs %}
+        {% set totalFat = totalFat + product.fat %}
+
+    {% else %}
+        <div class="container">
+            <p>Your meal {{ meal.name }} is empty. Add some products.</p>
+        </div>
+    {%  endfor %}
+
+    {% if totalCalories is not empty %}
+        <div class="container>">
+            <h5>Template Summary:</h5>
+            <p> Total Calories: {{ totalCalories }}</p>
+            <p> Total Protein: {{ totalProtien }} </p>
+            <p> Total Carbs: {{ totalCarbs }} </p>
+            <p> Total Fat: {{ totalFat }} </p>
+        </div>
+    {% endif %}
+
+    <a class="btn btn-outline-primary float-left" href="{{ url('meal_index') }}">Back</a>
+    <a class="btn btn-outline-dark float-left" href="{{ url('meal_add_product', {"id": meal.id}) }}">Add Product</a>
+
+    <div class="dropdown" style="display: inline-block">
+        <button class="btn btn-outline-dark dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Add User Product
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            {% for product in userProducts %}
+                <a class="dropdown-item" href="{{ url('meal_addUserProduct', { "id": product.id, "meal_id": meal.id}) }}">{{ product.name }}</a>
+            {% else %}
+                no products
+            {% endfor %}
+        </div>
+    </div>
+
+
+
+    <div class="clearfix"></div>
+{% endblock %}

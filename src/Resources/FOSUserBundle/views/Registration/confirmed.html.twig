@@ -1,0 +1,12 @@
+{% extends "@FOSUser/layout.html.twig" %}
+
+{% trans_default_domain 'FOSUserBundle' %}
+
+{% block fos_user_content %}
+    <h3>Welcome!</h3>
+    <p>If you want to add a product: <a href="{{ url("product_add") }}">Add product</a></p>
+    <p>If you want to create template: <a href="{{ url("template_create") }}">Create Template</a></p>
+    {% if targetUrl %}
+    <p><a href="{{ targetUrl }}">{{ 'registration.back'|trans }}</a></p>
+    {% endif %}
+{% endblock fos_user_content %}
