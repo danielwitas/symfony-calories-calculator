@@ -3,20 +3,19 @@
 
 
 {% block body %}
+    <a class="btn btn-outline-dark" href="{{ url("product_add") }}">Add Product</a>
+    <br>
+    <br>
 
     {% for product in products %}
         <div class="container">
-
-
             <h3><a href={{ url( "product_details", {"id": product.id} ) }}>{{ product.name }}</a></h3>
-
-            <p>Value: {{ product.value }}</p>
-            <p>Calories: {{ product.calories }}</p>
-            <p>Protein: {{ product.protein }}</p>
-            <p>Carbs: {{ product.carbs }}</p>
-            <p>Fat: {{ product.fat }}</p>
+            <p>Value: {{ product.value }}, Calories: {{ product.totalCalories }}, Protein: {{ product.totalProtein }}, Carbs: {{ product.totalCarbs }}, Fat: {{ product.totalFat }}</p>
+            <a class="btn btn-outline-dark" href="{{ url('product_edit', {"id": product.id}) }}">Edit</a>
+            <a class="btn btn-outline-danger" href="{{ url('product_delete', {"id": product.id}) }}">Delete</a>
         </div>
         <hr>
+
     {% else %}
         <div class="container">
             <h3>Your Product list is empty</h3>

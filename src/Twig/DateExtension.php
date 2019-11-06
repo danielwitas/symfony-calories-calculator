@@ -28,9 +28,9 @@ class DateExtension extends AbstractExtension
 
         if ($createdAt > new \DateTime("-1 hour")) {
             if($createdAt->diff(new \DateTime())->i == 1) {
-                return $createdAt->diff(new \DateTime())->i . ' minute ago.';
+                return 'Created: '. $createdAt->diff(new \DateTime())->i . ' minute ago.';
             }
-            return $createdAt->diff(new \DateTime())->i . ' minutes ago.';
+            return 'Created: '. $createdAt->diff(new \DateTime())->i . ' minutes ago.';
         }
 
         if ($createdAt > new \DateTime("-1 day")) {

@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 {% block body %}
-    <h3>Meal name: {{ meal.name }}</h3>
+    <h3>Meal details: {{ meal.name }}</h3>
     <hr>
     <br>
     {% set totalCalories = null %}
@@ -10,14 +10,15 @@
 
 
     {% for product in meal.products %}
-        <h3>{{ product.name }}, Value: {{ product.value }}, Calories: {{ product.calories }}, Protein: {{ product.protein }}, Carbs: {{ product.carbs }}, Fat: {{ product.fat }}</h3>
+        <h3><a href={{ url( "product_edit", {"id": product.id} ) }}>{{ product.name }}</a></h3>
+        <p> Value: {{ product.value }}, Calories: {{ product.totalCalories }}, Protein: {{ product.totalProtein }}, Carbs: {{ product.totalCarbs }}, Fat: {{ product.totalFat }}</p>
         <a class="btn btn-outline-danger" href={{ url( "product_delete", {"id": product.id} ) }}>Delete Product</a>
         <a class="btn btn-outline-dark" href={{ url( "product_edit", {"id": product.id} ) }}>Edit Product</a>
         <hr>
-        {% set totalCalories = totalCalories + product.calories %}
-        {% set totalProtien = totalProtien + product.protein %}
-        {% set totalCarbs = totalCarbs + product.carbs %}
-        {% set totalFat = totalFat + product.fat %}
+        {% set totalCalories = totalCalories + product.totalCalories %}
+        {% set totalProtien = totalProtien + product.totalProtein %}
+        {% set totalCarbs = totalCarbs + product.totalCarbs %}
+        {% set totalFat = totalFat + product.totalFat %}
 
     {% else %}
         <div class="container">
@@ -27,11 +28,7 @@
 
     {% if totalCalories is not empty %}
         <div class="container>">
-            <h5>Template Summary:</h5>
-            <p> Total Calories: {{ totalCalories }}</p>
-            <p> Total Protein: {{ totalProtien }} </p>
-            <p> Total Carbs: {{ totalCarbs }} </p>
-            <p> Total Fat: {{ totalFat }} </p>
+            <p>Meal Summary: Calories: {{ totalCalories }}, Protein: {{ totalProtien }}, Carbs: {{ totalCarbs }}, Fat: {{ totalFat }}</p>
         </div>
     {% endif %}
 

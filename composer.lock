@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "d81eaf881802535fabe71242434821bd",
+    "content-hash": "06ef7f9c62365f6f420f021a799173e1",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -2734,7 +2734,7 @@
         },
         {
             "name": "symfony/event-dispatcher",
-            "version": "v4.3.5",
+            "version": "v4.3.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/event-dispatcher.git",

@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+
+
+{% block body %}
+    <h2>Hello {{ user }}!</h2>
+    <hr>
+
+
+
+    <h3>Your stats:</h3>
+    <p>Calories target: {{ userStats.calories }}</p>
+    <p>Protien target: {{ userStats.protein }}</p>
+    <p>Calories target: {{ userStats.carbs }}</p>
+    <p>Calories target: {{ userStats.fat }}</p>
+    <a class="btn btn-outline-dark" href="{{ url("dashboard_edit") }}"> Edit your stats</a>
+    <hr>
+
+    <h4>Display avarage calories, protein, carbs, fat from your last templates:</h4>
+    <div class="dropdown" style="display: inline-block">
+        <button class="btn btn-outline-dark dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Avarage from:
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+
+            <a class="dropdown-item" href="{{ url("dashboard_avarage", {"limit": 7}) }}">7 Templates</a>
+            <a class="dropdown-item" href="{{ url("dashboard_avarage", {"limit": 14}) }}">14 Templates</a>
+            <a class="dropdown-item" href="{{ url("dashboard_avarage", {"limit": 21}) }}">21 Templates</a>
+
+        </div>
+    </div>
+{% endblock %}

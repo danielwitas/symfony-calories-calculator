@@ -49,6 +49,15 @@ class User extends BaseUser
      */
     private $products;
 
+    /**
+     * @var 
+     * 
+     * @ORM\OneToOne(targetEntity="UserStats", mappedBy="owner")
+     * 
+     * @ORM\JoinColumn(name="owner_id", referencedColumnName="id")
+     */
+    private $stats;
+
     public function __construct()
     {
         parent::__construct();
@@ -116,5 +125,17 @@ class User extends BaseUser
         $this->meals[] = $meal;
 
         return $this;
+    }
+
+    public function setStats($stats)
+    {
+        $this->stats = $stats;
+        
+        return $this;
+    }
+
+    public function getStats()
+    {
+        return $this->stats;
     }
 }

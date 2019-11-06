@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+
+
+{% block body %}
+
+  <h2>Your avarage from last {{ limit }} templates:</h2>
+  <hr>
+  <p>Calories: {{ avarage.calories}}</p>
+  <p>Protein: {{ avarage.protein}}</p>
+  <p>Carbs: {{ avarage.carbs}}</p>
+  <p>Fat: {{ avarage.fat}}</p>
+
+{% endblock %}

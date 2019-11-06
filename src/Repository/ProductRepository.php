@@ -3,8 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\Product;
+use App\Entity\Template;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\Query\Expr\Join;
 
 /**
  * @method Product|null find($id, $lockMode = null, $lockVersion = null)
@@ -47,4 +49,36 @@ class ProductRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function getAvarage($user, $limit = 7)
+    {
+        $templates = $this->getEntityManager()->getRepository(Template::class)->findBy(['owner' => $user], ['id' => 'DESC'], $limit);
+
+        $totalCalories = null;
+        $totalProtein = null;
+        $totalCarbs = null;
+        $totalFat = null;
+
+        foreach ($templates as $template)
+        {
+            $products = $template->getProducts();
+
+            foreach ($products as $product)
+            {
+                $totalCalories += $product->getTotalCalories();
+                $totalProtein += $product->getTotalProtein();
+                $totalCarbs += $product->getTotalCarbs();
+                $totalFat += $product->getTotalFat();
+            }
+
+        }
+
+        return [
+            'calories' => round($totalCalories / $limit),
+            'protein' => round($totalProtein / $limit),
+            'carbs' => round($totalCarbs / $limit),
+            'fat' => round($totalFat / $limit)
+        ];
+
+    }
 }

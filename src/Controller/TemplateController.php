@@ -9,6 +9,7 @@ use App\Form\ProductType;
 use App\Form\TemplateType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -37,9 +38,11 @@ class TemplateController extends AbstractController
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return Response
+     *
+     * @throws \Exception
      */
-    public function createTemplate(Request $request) : Response
+    public function createTemplate(Request $request): Response
     {
         $this->denyAccessUnlessGranted("ROLE_USER");
 
@@ -50,7 +53,7 @@ class TemplateController extends AbstractController
         if ($request->isMethod('post')) {
             $form->handleRequest($request);
 
-            if($form->isValid()) {
+            if ($form->isValid()) {
 
                 $template->setCreatedAt(new \DateTime());
                 $template->setOwner($this->getUser());
@@ -74,6 +77,8 @@ class TemplateController extends AbstractController
      * @Route("/template/delete/{id}", name="template_delete")
      *
      * @param Template $template
+     *
+     * @return RedirectResponse
      */
     public function deleteTemplate(Template $template)
     {
@@ -94,9 +99,12 @@ class TemplateController extends AbstractController
 
     /**
      * @Route("/template/edit/{id}", name="template_edit")
+     *
      * @param Request $request
+     *
      * @param Template $template
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     *
+     * @return RedirectResponse|Response
      */
     public function editTemplate(Request $request, Template $template)
     {
@@ -108,7 +116,7 @@ class TemplateController extends AbstractController
 
         $form = $this->createForm(TemplateType::class, $template);
 
-        if($request->isMethod('post')) {
+        if ($request->isMethod('post')) {
 
             $form->handleRequest($request);
             $entityManager = $this->getDoctrine()->getManager();
@@ -133,9 +141,10 @@ class TemplateController extends AbstractController
     /**
      * @Route("/template/details/{id}", name="template_details")
      *
-     * @return \Symfony\Component\HttpFoundation\Response
-     *
      * @param Template $template
+     *
+     * @return Response
+     *
      */
     public function detailsTemplate(Template $template)
     {
@@ -152,7 +161,6 @@ class TemplateController extends AbstractController
             ->findby(["owner" => $this->getUser()], ['id' => 'DESC']);
 
 
-
 //        $deleteTemplateForm = $this->createFormBuilder()
 //            ->setAction($this->generateUrl('template_delete', ['id' => $template->getId()]))
 //            ->setMethod(Request::METHOD_DELETE)
@@ -160,6 +168,7 @@ class TemplateController extends AbstractController
 //            ->getForm();
 //
 //        $deleteProductForm = $this->createFormBuilder()
+//                ->setAction($this->generateUrl('product_delete', ['id' => $product->getId()]))
 //            ->setMethod(Request::METHOD_DELETE)
 //            ->add('submit', SubmitType::class, ['label' => 'Delete Product'])
 //            ->getForm();
@@ -177,6 +186,7 @@ class TemplateController extends AbstractController
 
     /**
      * @Route("/template/add/{id}/{template_id}", name="template_addUserProduct")
+     *
      * @ParamConverter("template", class="App\Entity\Template", options={"id" = "template_id"})
      */
     public function addUserProduct(Product $product, Template $template)
@@ -190,6 +200,8 @@ class TemplateController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($product);
         $entityManager->flush();
+
+
 
         $this->addFlash("success", "Product {$product->getName()} has been added.");
         return $this->redirectToRoute('template_details', ['id' => $template->getId()]);
@@ -211,12 +223,15 @@ class TemplateController extends AbstractController
 
             // $product = $form->getData();
 
+            $product->setTotals();
             $product->setTemplate($template);
             $product->setOwner($this->getUser());
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($product);
             $entityManager->flush();
+
+
 
             $this->addFlash("success", "Product {$product->getName()} has been added.");
 
@@ -235,8 +250,7 @@ class TemplateController extends AbstractController
         $this->denyAccessUnlessGranted("ROLE_USER");
 
 
-        foreach ($meal->getProducts() as $product)
-        {
+        foreach ($meal->getProducts() as $product) {
 
             $product = clone $product;
 
@@ -245,8 +259,9 @@ class TemplateController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($product);
             $entityManager->flush();
-        }
 
+
+        }
 
 
         $this->addFlash("success", "Meal {$meal->getName()} has been added.");

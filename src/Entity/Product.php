@@ -10,6 +10,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Product
 {
+    const STATUS_SHARED = "shared";
+    const STATUS_PRIVATE = "private";
+    const STATUS_PUBLIC = "public";
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -32,7 +36,7 @@ class Product
     /**
      * @var float
      *
-     * @ORM\Column(name="value", type="decimal", precision=10, scale=2)
+     * @ORM\Column(name="value", type="decimal", precision=10, scale=1)
      *
      * @Assert\NotBlank()
      *
@@ -47,7 +51,7 @@ class Product
     /**
      * @var float
      *
-     * @ORM\Column(name="calories", type="decimal", precision=10, scale=2)
+     * @ORM\Column(name="calories", type="decimal", precision=10, scale=1)
      *
      * @Assert\NotBlank()
      *
@@ -62,7 +66,7 @@ class Product
     /**
      * @var float
      *
-     * @ORM\Column(name="protein", type="decimal", precision=10, scale=2)
+     * @ORM\Column(name="protein", type="decimal", precision=10, scale=1)
      *
      * @Assert\NotBlank()
      *
@@ -77,7 +81,7 @@ class Product
     /**
      * @var float
      *
-     * @ORM\Column(name="carbs", type="decimal", precision=10, scale=2)
+     * @ORM\Column(name="carbs", type="decimal", precision=10, scale=1)
      *
      * @Assert\NotBlank()
      *
@@ -92,7 +96,7 @@ class Product
     /**
      * @var float
      *
-     * @ORM\Column(name="fat", type="decimal", precision=10, scale=2)
+     * @ORM\Column(name="fat", type="decimal", precision=10, scale=1)
      *
      * @Assert\NotBlank()
      *
@@ -107,29 +111,29 @@ class Product
     /**
      * @var float
      *
-     * @ORM\Column(name="total_calories", nullable=true, type="decimal", precision=10, scale=2, options={"default" = 0})
+     * @ORM\Column(name="total_calories", nullable=true, type="decimal", precision=10, scale=1)
      */
-    private $totalCalories = 10;
+    private $totalCalories;
 
 
     /**
      * @var float
      *
-     * @ORM\Column(name="total_protein", nullable=true, type="decimal", precision=10, scale=2)
+     * @ORM\Column(name="total_protein", nullable=true, type="decimal", precision=10, scale=1)
      */
     private $totalProtein;
 
     /**
      * @var float
      *
-     * @ORM\Column(name="total_carbs", nullable=true, type="decimal", precision=10, scale=2)
+     * @ORM\Column(name="total_carbs", nullable=true, type="decimal", precision=10, scale=1)
      */
     private $totalCarbs;
 
     /**
      * @var float
      *
-     * @ORM\Column(name="total_fat", nullable=true, type="decimal", precision=10, scale=2)
+     * @ORM\Column(name="total_fat", nullable=true, type="decimal", precision=10, scale=1)
      */
     private $totalFat;
 
@@ -158,6 +162,13 @@ class Product
      * @ORM\JoinColumn(name="owner_id", referencedColumnName="id")
      */
     private $owner;
+
+    /**
+     * @var string
+
+     * @ORM\Column(name="status", type="string", length=10, nullable=true)
+     */
+    private $status;
 
     public function getId(): ?int
     {
@@ -282,7 +293,7 @@ class Product
      *
      * @return $this
      */
-    public function setOwner(User $owner)
+    public function setOwner($owner)
     {
         $this->owner = $owner;
 
@@ -298,6 +309,33 @@ class Product
     }
 
     /**
+     * @param $ingredient
+     *
+     * @return float|int
+     */
+    public function countTotal($ingredient)
+    {
+        $ingredient = ($ingredient * $this->value) / 100;
+
+        return $ingredient;
+    }
+
+    /**
+     * @param $totalCalories
+     *
+     * @return $this
+     */
+    public function setTotals()
+    {
+        $this->totalCalories = $this->countTotal($this->calories);
+        $this->totalProtein = $this->countTotal($this->protein);
+        $this->totalCarbs = $this->countTotal($this->carbs);
+        $this->totalFat = $this->countTotal($this->fat);
+
+        return $this;
+    }
+
+    /**
      * @param $totalCalories
      *
      * @return $this
@@ -305,7 +343,7 @@ class Product
     public function setTotalCalories($totalCalories)
     {
         $this->totalCalories = $totalCalories;
-
+        
         return $this;
     }
 
@@ -315,6 +353,78 @@ class Product
     public function getTotalCalories()
     {
         return $this->totalCalories;
+    }
+
+    /**
+     * @param $totalProtein
+     *
+     * @return $this
+     */
+    public function setTotalProtein($totalProtein)
+    {
+        $this->totalProtein = $totalProtein;
+
+        return $this;
+    }
+
+    /**
+     * @return float
+     */
+    public function getTotalProtein()
+    {
+        return $this->totalProtein;
+    }
+
+    /**
+     * @param $totalCarbs
+     *
+     * @return $this
+     */
+    public function setTotalCarbs($totalCarbs)
+    {
+        $this->totalCarbs = $totalCarbs;
+
+        return $this;
+    }
+
+    /**
+     * @return float
+     */
+    public function getTotalCarbs()
+    {
+        return $this->totalCarbs;
+    }
+
+    /**
+     * @param $totalFat
+     *
+     * @return $this
+     */
+    public function setTotalFat($totalFat)
+    {
+        $this->totalFat = $totalFat;
+
+        return $this;
+    }
+
+    /**
+     * @return float
+     */
+    public function getTotalFat()
+    {
+        return $this->totalFat;
+    }
+
+    public function setStatus($status)
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function getStatus()
+    {
+        return $this->status;
     }
 
 }

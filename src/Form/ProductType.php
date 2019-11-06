@@ -20,11 +20,11 @@ class ProductType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, ['label' => 'Name'])
-            ->add('value', NumberType::class, ['label' => 'Value'])
-            ->add('calories', NumberType::class, ['label' => 'Calories'])
-            ->add('protein', NumberType::class, ['label' => 'Protein'])
-            ->add('carbs', NumberType::class, ['label' => 'Carbs'])
-            ->add('fat', NumberType::class, ['label' => 'Fat'])
+            ->add('value', NumberType::class, ['label' => 'Value in grams'])
+            ->add('calories', NumberType::class, ['label' => 'Calories per 100 gram'])
+            ->add('protein', NumberType::class, ['label' => 'Protein per 100 gram'])
+            ->add('carbs', NumberType::class, ['label' => 'Carbs per 100 gram'])
+            ->add('fat', NumberType::class, ['label' => 'Fat per 100 gram'])
             ->add('submit', SubmitType::class, ['label' => 'Add']);
 
 

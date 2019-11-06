@@ -4,12 +4,32 @@
 
 {% block body %}
 
+    <a class="btn btn-outline-dark" href="{{ url("template_create") }}">Create Template</a>
+    <br>
+    <br>
+
     {% for template in templates %}
+
+        {% set totalCalories = null %}
+        {% set totalProtien = null %}
+        {% set totalCarbs = null %}
+        {% set totalFat = null %}
+
+        {% for product in template.products %}
+
+            {% set totalCalories = totalCalories + product.totalCalories %}
+            {% set totalProtien = totalProtien + product.totalProtein %}
+            {% set totalCarbs = totalCarbs + product.totalCarbs %}
+            {% set totalFat = totalFat + product.totalFat %}
+
+        {% endfor %}
 
         <h3><a href={{ url( "template_details", {"id": template.id} ) }}>{{ template.name }}</a></h3>
         <p>{{ template.createdAt | addedDate  }}</p>
-        {% if template.totalCalories is not empty  %}
-        <p>Summary: Calories: {{ template.totalCalories }}</p>
+        {% if totalCalories is not empty %}
+            <div class="container>">
+                <p>Template Summary: Calories: {{ totalCalories }}, Protein: {{ totalProtien }}, Carbs: {{ totalCarbs }}, Fat: {{ totalFat }} </p>
+            </div>
         {% endif %}
         <a class="btn btn-outline-dark float-left" href="{{ url('template_edit', {"id": template.id}) }}">Edit Name</a>
         <a class="btn btn-outline-danger float-left" href="{{ url('template_delete', {"id": template.id}) }}">Delete Template</a>
@@ -21,6 +41,7 @@
             <h3>Your Template list is empty</h3>
         </div>
     {% endfor %}
+
 
 
 {% endblock %}

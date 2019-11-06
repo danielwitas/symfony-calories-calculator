@@ -4,10 +4,34 @@
 
 {% block body %}
 
+
+    <a class="btn btn-outline-dark" href="{{ url("meal_create") }}">Create Meal</a>
+    <br>
+    <br>
+
     {% for meal in meals %}
+
+        {% set totalCalories = null %}
+        {% set totalProtien = null %}
+        {% set totalCarbs = null %}
+        {% set totalFat = null %}
+
+        {% for product in meal.products %}
+
+            {% set totalCalories = totalCalories + product.totalCalories %}
+            {% set totalProtien = totalProtien + product.totalProtein %}
+            {% set totalCarbs = totalCarbs + product.totalCarbs %}
+            {% set totalFat = totalFat + product.totalFat %}
+
+        {% endfor %}
 
         <h3><a href={{ url( "meal_details", {"id": meal.id} ) }}>{{ meal.name }}</a></h3>
         <p>{{ meal.createdAt | addedDate  }}</p>
+        {% if totalCalories is not empty %}
+            <div class="container>">
+                <p>Meal Summary: Calories: {{ totalCalories }}, Protein: {{ totalProtien }}, Carbs: {{ totalCarbs }}, Fat: {{ totalFat }} </p>
+            </div>
+        {% endif %}
         <a class="btn btn-outline-dark float-left" href="{{ url('meal_edit', {"id": meal.id}) }}">Edit Name</a>
         <a class="btn btn-outline-danger float-left" href="{{ url('meal_delete', {"id": meal.id}) }}">Delete Meal</a>
         <br><br>

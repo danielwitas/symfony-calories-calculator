@@ -53,15 +53,6 @@ class Template
     private $owner;
 
     /**
-     * @var float
-     *
-     * @ORM\Column(name="totalCalories", nullable=true, type="decimal", precision=10, scale=2)
-
-     */
-    private $totalCalories = null;
-
-
-    /**
      * Template constructor.
      */
     public function __construct()
@@ -146,22 +137,4 @@ class Template
         return $this->owner;
     }
 
-    public function setTotalCalories()
-    {
-        $this->totalCalories = null;
-        foreach ($this->products as $product) {
-          $this->totalCalories += $product->getCalories();
-      }
-
-        return $this;
-    }
-
-    public function getTotalCalories()
-    {
-        foreach ($this->products as $product) {
-            $this->totalCalories += $product->getCalories();
-        }
-
-        return $this->totalCalories;
-    }
 }

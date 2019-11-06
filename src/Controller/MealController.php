@@ -170,6 +170,7 @@ class MealController extends AbstractController
             // $product = $form->getData();
 
             $product
+                ->setTotals()
                 ->setMeal($meal)
                 ->setOwner($this->getUser());
 

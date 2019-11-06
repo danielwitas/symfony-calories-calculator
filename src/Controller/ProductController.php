@@ -5,11 +5,15 @@ namespace App\Controller;
 use App\Entity\Meal;
 use App\Entity\Product;
 use App\Entity\Template;
+use App\EventDispatcher\Events;
+use App\EventDispatcher\ProductEvent;
 use App\Form\ProductType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -19,6 +23,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 class ProductController extends AbstractController
 {
+
     /**
      * @Route("/product", name="product_index")
      */
@@ -39,7 +44,8 @@ class ProductController extends AbstractController
      * @Route("/product/details/{id}", name="product_details")
      *
      * @param Product $product
-     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     * @return Response
      *
      */
     public function detailsProduct(Product $product)
@@ -62,7 +68,9 @@ class ProductController extends AbstractController
     /**
      * @Route("/product/add", name="product_add")
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @param Request $request
+     *
+     * @return RedirectResponse|Response
      */
     public function addProduct(Request $request)
     {
@@ -78,7 +86,7 @@ class ProductController extends AbstractController
 
                 // $product = $form->getData();
                 $product->setOwner($this->getUser());
-                $product->setTotalCalories($product->getCalories() * $product->getValue() / 100);
+                $product->setTotals();
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->persist($product);
                 $entityManager->flush();
@@ -98,8 +106,11 @@ class ProductController extends AbstractController
 
     /**
      * @Route("/product/edit/{id}", name="product_edit")
+     *
      * @param Request $request
+     *
      * @param Product $product
+     *
      * @return Response
      */
     public function editProduct(Request $request, Product $product)
@@ -114,6 +125,9 @@ class ProductController extends AbstractController
 
         if ($request->isMethod('post')) {
             $form->handleRequest($request);
+
+            $product->setTotals();
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($product);
             $entityManager->flush();
@@ -143,7 +157,7 @@ class ProductController extends AbstractController
      *
      * @param Product $product
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      */
     public function deleteProduct(Product $product)
     {
@@ -172,5 +186,47 @@ class ProductController extends AbstractController
         }
 
         return $this->redirectToRoute("product_index");
+    }
+
+    /**
+     * @Route("/product/share/{id}", name="product_share")
+     *
+     * @param Product $product
+     *
+     * @param EventDispatcherInterface $dispatcher
+     *
+     * @return RedirectResponse
+     */
+    public function shareProduct(Product $product, EventDispatcherInterface $dispatcher)
+    {
+        $this->denyAccessUnlessGranted("ROLE_USER");
+
+        if ($this->getUser() !== $product->getOwner()) {
+            throw new AccessDeniedException();
+        }
+
+        if($product->getStatus() === Product::STATUS_SHARED)
+        {
+            $this->addFlash("error", "Product {$product->getName()} has been already shared.");
+            return $this->redirectToRoute('product_details', ["id" => $product->getId()]);
+        }
+
+        $product->setStatus(Product::STATUS_SHARED);
+        $publicProduct = clone $product;
+        $publicProduct->setOwner(null);
+        $publicProduct->setValue(100);
+
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($publicProduct);
+        $entityManager->flush();
+
+        $dispatcher->dispatch(new ProductEvent($product), Events::PRODUCT_SHARE);
+        //$this->get('event_dispatcher')->dispatch(new ProductEvent($product), Events::PRODUCT_SHARE);
+
+        $this->addFlash("success", "Product {$publicProduct->getName()} has been shared.");
+
+        return $this->redirectToRoute('product_details', ["id" => $product->getId()]);
+
     }
 }
